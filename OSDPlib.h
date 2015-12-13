@@ -41,7 +41,7 @@ int get_md5_of_chunk(unsigned char *result, char *data, ssize_t size);
 
 
 typedef struct {
-    unsigned char md5_hash[MD5_DIGEST_LENGTH];
+    char md5_hash[MD5_DIGEST_LENGTH*2 + 1];
     ssize_t offset_in_file;
     ssize_t length_of_chunk;
 } chunk_info;
@@ -53,5 +53,6 @@ typedef struct {
 
 int get_hash_string_representation(char *string_representation, unsigned char *md5_hash);
 int store_file(const char *name, const char *base_dir);
+int restore_file(const char *name, const char* new_name , const char *base_dir);
 
 #endif
