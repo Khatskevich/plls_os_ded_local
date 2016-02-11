@@ -10,7 +10,7 @@ using namespace std;
 
 
 int main( int argc, char** argv) {
-    logInit(LOG_ALL,LOG_PRINT_TIME|LOG_PRINT_FILE|LOG_PRINT_LINE|LOG_PRINT_LEVEL_DESCRIPTION,NULL);
+    logInit(LOG_ERROR,LOG_PRINT_TIME|LOG_PRINT_FILE|LOG_PRINT_LINE|LOG_PRINT_LEVEL_DESCRIPTION,NULL);
     if ( argc < 3){
         LOGMESG(LOG_ERROR, "Wrong input data");
     }

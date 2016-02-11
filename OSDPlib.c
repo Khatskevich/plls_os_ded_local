@@ -10,6 +10,8 @@
 #include <sys/stat.h>
 #include "log.h"
 #include <sys/mman.h>
+#include <libgen.h>
+
 
 int64_t pow_mod(int64_t a, uint64_t n, uint64_t mod) {
     if (n == 0) {
@@ -77,7 +79,7 @@ int get_hash_string_representation(char *string_representation, unsigned char *m
     return 0;
 }
 
-int store_file(const char *name,const char *base_dir) {
+int store_file(char *name,const char *base_dir) {
     int fd;
     int fis;
     int res;
@@ -111,7 +113,7 @@ int store_file(const char *name,const char *base_dir) {
     path_to_saved_chunk = (char *) malloc(strlen(name) + strlen(FDATA_BASE_NAME) + MD5_DIGEST_LENGTH * 2 + MD5_DIGEST_LENGTH * 2+ 3); //need check
     fis_data = (chunk_info*) malloc( sizeof(chunk_info)*fis_size );
     fis_data[0].length_of_chunk = 0;
-    sprintf(fis_path, "%s%s%s", base_dir, FIS_BASE_NAME, name);
+    sprintf(fis_path, "%s%s%s", base_dir, FIS_BASE_NAME, basename(name));
     LOGMESG(LOG_INFO,"fis_path = %s fdata_path = %s",fis_path ,  fdata_path);
     fis = open(fis_path, O_EXCL| O_CREAT | O_WRONLY, 0666);
     if (fis < 0) {
@@ -148,9 +150,9 @@ int store_file(const char *name,const char *base_dir) {
         get_hash_string_representation(temp_chunk, md5);
         sprintf(path_to_saved_chunk, "%s/%s",fdata_path,temp_chunk);
         save_chunk_data(path_to_saved_chunk, mmap_start+offset_to_this_chunk, size_of_next_chunk);
-        if ( fis_data[0].length_of_chunk+1 > fis_size){
+        if ( fis_data[0].length_of_chunk+1 >= fis_size){
             fis_size*=2;
-            fis_data = (chunk_info*)realloc((char*)fis_data, sizeof(chunk_info)*fis_size );
+            fis_data = (chunk_info*)realloc(fis_data, sizeof(chunk_info)*fis_size );
         }
         fis_data[0].length_of_chunk = fis_data[0].length_of_chunk+1;
         fis_data[fis_data[0].length_of_chunk].length_of_chunk = size_of_next_chunk;
@@ -246,7 +248,7 @@ int save_chunk_data(char *path_for_data_to_save, char *data, ssize_t length) {
     return -1;
 }
 
-int restore_file(const char *name, const char* new_name , const char *base_dir) {
+int restore_file(char *name, const char* new_name , const char *base_dir) {
     int ret_val = -1;
     int fd, fis;
     struct stat sb;

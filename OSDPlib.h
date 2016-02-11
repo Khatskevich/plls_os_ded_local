@@ -52,7 +52,7 @@ typedef struct {
 } saved_chunk_header;
 
 int get_hash_string_representation(char *string_representation, unsigned char *md5_hash);
-int store_file(const char *name, const char *base_dir);
-int restore_file(const char *name, const char* new_name , const char *base_dir);
+int store_file(char *name, const char *base_dir);
+int restore_file(char *name, const char* new_name , const char *base_dir);
 
 #endif
